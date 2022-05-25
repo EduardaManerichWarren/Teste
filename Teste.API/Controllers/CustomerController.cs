@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System;
 using Teste.API.Models;
 using Teste.API.Service;
 
@@ -9,14 +10,15 @@ namespace Teste.API.Controllers
     public class CustomerController : ControllerBase
     {
         private readonly ICustomerService _service;
+
         public CustomerController(ICustomerService service)
         {
             _service = service;
         }
 
-        [HttpGet ("ById")]
-        public ActionResult<Customer> Get(Guid id) 
-        { 
+        [HttpGet("{id:Guid}")]
+        public ActionResult<Customer> Get(Guid id)
+        {
             var customer = _service.GetById(id);
             if (customer is null)
             {
@@ -26,15 +28,16 @@ namespace Teste.API.Controllers
         }
 
         [HttpGet]
-        public ActionResult<Customer> Get() 
+        public ActionResult<Customer> Get()
         {
-            var customer = _service.Get();
-            if (customer is null)
+            var customers = _service.GetAll();
+            if (customers is null)
             {
                 return NotFound();
             }
-            return Ok(customer);
+            return Ok(customers);
         }
+
         [HttpPost]
         public ActionResult Post(Customer customer)
         {
@@ -46,18 +49,21 @@ namespace Teste.API.Controllers
             return Ok(customer);
         }
 
-        [HttpDelete]
-        public ActionResult<Customer> Delete(Guid id) 
+        [HttpDelete("{id:Guid}")]
+        public ActionResult<Customer> Delete(Guid id)
         {
             _service.Delete(id);
             return Ok();
         }
 
-        [HttpPut]
-        public ActionResult<Customer> Put(Customer customer) 
+        [HttpPut("{id:Guid}")]
+        public ActionResult<Customer> Put(Guid id, Customer customer)
         {
-            _service.Update(customer);
-            return Ok(customer);
+            var sucessfullyUpdated = _service.Update(id, customer);
+
+            return sucessfullyUpdated
+                ? Ok(customer)
+                : NotFound($"Customer not found for Id: {id}");
         }
     }
 }
