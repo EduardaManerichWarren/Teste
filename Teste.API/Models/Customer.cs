@@ -1,4 +1,6 @@
-﻿namespace Teste.API.Models
+﻿using System;
+
+namespace Teste.API.Models
 {
     public class Customer
     {
@@ -15,7 +17,6 @@
         public string PostalCode { get; set; }
         public string Address { get; set; }
         public int Number { get; set; }
-
         
         public Customer(Guid id, string fullName, string email, string cpf, string cellphone, DateTime birthDate, bool emailSms, bool whatsapp, string country, string city, string postalCode, string address, int number)
         {
