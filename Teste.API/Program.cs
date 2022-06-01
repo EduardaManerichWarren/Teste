@@ -1,4 +1,7 @@
 using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Teste.API.Service;
 using Teste.API.Validator;
 
@@ -10,8 +13,8 @@ builder.Services.AddControllers()
     .AddFluentValidation(config=>
     {
         config.RegisterValidatorsFromAssemblyContaining<CustomerValidator>();
-    }        
-    );
+    });
+
 builder.Services.AddSingleton<ICustomerService, CustomerService>();
 builder.Services.AddMemoryCache();
 
