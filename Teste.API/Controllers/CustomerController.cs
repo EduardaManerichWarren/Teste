@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using DomainModels.Models;
+using DomainService.Service;
+using Microsoft.AspNetCore.Mvc;
 using System;
-using Teste.API.Models;
-using Teste.API.Service;
 
 namespace Teste.API.Controllers
 {
@@ -19,41 +19,79 @@ namespace Teste.API.Controllers
         [HttpGet("{id:Guid}")]
         public ActionResult<Customer> Get(Guid id)
         {
-            var customer = _service.GetById(id);
-            if (customer is null)
+            try
             {
-                return NotFound();
+                var customer = _service.GetById(id);
+                if (customer is null)
+                {
+                    return NotFound();
+                }
+                return Ok(customer);
+
             }
-            return Ok(customer);
+            catch (Exception)
+            {
+                return BadRequest();
+            }
         }
 
         [HttpGet]
         public ActionResult<Customer> Get()
         {
-            var customers = _service.GetAll();
-            if (customers is null)
+            try
             {
-                return NotFound();
+                var customers = _service.GetAll();
+                if (customers is null)
+                {
+                    return NotFound();
+                }
+                return Ok(customers);
+
             }
-            return Ok(customers);
+            catch (Exception)
+            {
+
+                return BadRequest();
+            }
         }
 
         [HttpPost]
         public ActionResult Post(Customer customer)
         {
-            if (customer is null)
+            try
+            {
+                if (customer is null)
+                {
+                    return BadRequest();
+                }
+                _service.Create(customer);
+                return Ok(customer.Id);
+            }
+            catch (Exception)
             {
                 return BadRequest();
             }
-            _service.Create(customer);
-            return Ok(customer);
         }
 
         [HttpDelete("{id:Guid}")]
         public ActionResult<Customer> Delete(Guid id)
         {
-            _service.Delete(id);
-            return Ok();
+            
+            try
+            {
+                if (_service.Delete(id))
+                {
+                    return Ok();
+                }
+                else
+                {
+                    return BadRequest();
+                }
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
         }
 
         [HttpPut("{id:Guid}")]
@@ -61,9 +99,17 @@ namespace Teste.API.Controllers
         {
             var sucessfullyUpdated = _service.Update(id, customer);
 
-            return sucessfullyUpdated
-                ? Ok(customer)
-                : NotFound($"Customer not found for Id: {id}");
+            try
+            {
+                return sucessfullyUpdated
+                    ? Ok(customer)
+                    : NotFound($"Customer not found for Id: {id}");
+
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
         }
     }
 }
