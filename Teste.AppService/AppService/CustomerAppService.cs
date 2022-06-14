@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Teste.API.Service
 {
-    public class CustomerService : ICustomerService
+    public class CustomerAppService : ICustomerAppService
     {
         private readonly List<Customer> _customers = new();
 
