@@ -79,14 +79,9 @@ namespace Teste.API.Controllers
             
             try
             {
-                if (_service.Delete(id))
-                {
-                    return Ok();
-                }
-                else
-                {
-                    return BadRequest();
-                }
+                return _service.Delete(id)
+                    ? return Ok();
+                    : BadRequest();
             }
             catch (Exception)
             {
